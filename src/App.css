@@ -1,0 +1,15 @@
+.navbar-bar-red {
+  background-color: #d01f3c;
+}
+
+.navbar-bar-red .navbar-brand,
+.navbar-bar-red .navbar-brand:focus,
+.navbar-bar-red .navbar-text,
+.navbar-bar-red .nav-link {
+  color: #fff !important;
+}
+
+.navbar-bar-red .nav-link:focus,
+.navbar-bar-red .nav-link:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
