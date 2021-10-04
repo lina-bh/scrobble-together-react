@@ -1,11 +1,15 @@
-import Client from ".";
+import { GET } from "./client";
 
-export default class Auth {
-  constructor(cl) {
-    this.client = cl;
+export async function getToken(config) {
+  const b = await GET("auth.gettoken", {}, config);
+  if (b.token) {
+    return b.token;
   }
+}
 
-  getToken() {
-    return this.cl.GET("auth.gettoken", {});
+export async function getSession(token, config) {
+  const b = await GET("auth.getsession", { token }, config);
+  if (b.session) {
+    return b.session;
   }
 }
