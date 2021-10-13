@@ -1,33 +1,37 @@
 import "./App.css";
-import { lazy, Suspense } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 
 import { useAuth } from "./AuthContext";
+import LogoutLink from "./LogoutLink";
+import Login from "./Login";
+import Home from "./Home";
 
-const LogoutLink = lazy(() => import("./LogoutLink"));
-const Login = lazy(() => import("./Login"));
-const Home = lazy(() => import("./Home"));
+const Header = () => {
+  const auth = useAuth();
+
+  return (
+    <Navbar className="navbar-bar-red">
+      <Container>
+        <Navbar.Brand>Scrobble Together</Navbar.Brand>
+        {auth.key && (
+          <Nav className="ml-auto">
+            <LogoutLink />
+          </Nav>
+        )}
+      </Container>
+    </Navbar>
+  );
+};
 
 const App = () => {
   const auth = useAuth();
   return (
     <>
-      <Navbar className="navbar-bar-red">
-        <Container>
-          <Navbar.Brand>Scrobble Together</Navbar.Brand>
-          <Suspense fallback={null}>
-            {auth.key && (
-              <Nav className="ml-auto">
-                <LogoutLink />
-              </Nav>
-            )}
-          </Suspense>
-        </Container>
-      </Navbar>
+      <Header />
       <Container className="mt-4 mb-4">
-        <Suspense fallback={null}>{auth.key ? <Home /> : <Login />}</Suspense>
+        {auth.key ? <Home /> : <Login />}
       </Container>
     </>
   );

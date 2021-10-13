@@ -1,68 +1,76 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLastfm } from "@fortawesome/free-brands-svg-icons";
 import Button from "react-bootstrap/Button";
-import { getSession, getToken } from "./api/auth";
-import { LfmError } from "./api/client";
+import { authGetSession, authGetToken, LfmError } from "./api";
 import { debounce } from "lodash";
-import { useAuth } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 const loginurl =
   "http://www.last.fm/api/auth/?api_key=f28fccb10bd142b6dc8eadded052dbb5";
 
-const Login = (props) => {
-  const [token, setToken] = useState(null);
-  const [clicked, setClicked] = useState(false);
-  const auth = useAuth();
+export default class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      token: null,
+      loginFn: false,
+    };
+    this.onFocus = debounce(this.onFocus.bind(this), 500);
+  }
 
-  const onFocus = debounce(async () => {
+  async onFocus() {
     if (document.visibilityState === "hidden") {
       return;
     }
-    if (clicked && token) {
+    const { loginFn, token } = this.state;
+    if (loginFn && token) {
       try {
-        const session = await getSession(token);
-        auth.login(session);
+        const session = await authGetSession(token);
+        loginFn(session);
       } catch (e) {
         if (!(e instanceof LfmError && e.code === 14)) {
           throw e;
         }
       }
     }
-  }, 500);
+  }
 
-  useEffect(() => {
-    if (props.loading) {
-      return;
-    }
+  componentDidMount() {
     (async () => {
-      if (!token) {
-        setToken(await getToken());
-      }
-      window.addEventListener("visibilitychange", onFocus);
+      this.setState({ token: await authGetToken() });
     })();
+    window.addEventListener("visibilitychange", this.onFocus);
+  }
 
-    return () => window.removeEventListener("visibilitychange", onFocus);
-  });
+  componentWillUnmount() {
+    window.removeEventListener("visibilitychange", this.onFocus);
+  }
 
-  return (
-    <div className="mb-2">
-      <p>
-        Scrobble Together listens for the scrobbles of another last.fm user and
-        replicates them to your last.fm profile. Imagine you're in a music
-        library or other kind of venue, or in the car listening together, and
-        you want to add the songs you're both listening to on your last.fm:
-        Scrobble Together is perfect for that. All you need to do is to log in
-        with last.fm, and type in someone else's last.fm username.
-      </p>
-      <Button
-        href={loginurl + "&token=" + token}
-        target="_blank"
-        onClick={() => setClicked(true)}
-      >
-        <FontAwesomeIcon icon={faLastfm} /> Sign in with Last.fm
-      </Button>
-    </div>
-  );
-};
-export default Login;
+  render() {
+    return (
+      <AuthContext.Consumer>
+        {(auth) => (
+          <div className="mb-2">
+            <p>
+              Scrobble Together listens for the scrobbles of another last.fm
+              user and replicates them to your last.fm profile. Imagine you're
+              in a music library or other kind of venue, or in the car listening
+              together, and you want to add the songs you're both listening to
+              on your last.fm: Scrobble Together is perfect for that. All you
+              need to do is to log in with last.fm, and type in someone else's
+              last.fm username.
+            </p>
+            <Button
+              href={loginurl + "&token=" + this.state.token}
+              target="_blank"
+              onClick={() => this.setState({ loginFn: auth.login })}
+            >
+              <FontAwesomeIcon icon={faLastfm} /> Sign in with Last.fm
+            </Button>
+          </div>
+        )}
+      </AuthContext.Consumer>
+    );
+  }
+}

@@ -45,4 +45,6 @@ const AuthProvider = (props) => {
 
 const useAuth = () => useContext(AuthContext);
 
-export { AuthProvider, useAuth };
+const AuthConsumer = AuthContext.Consumer;
+
+export { AuthContext, AuthProvider, AuthConsumer, useAuth };

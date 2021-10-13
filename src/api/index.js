@@ -1,7 +1,7 @@
 import SparkMD5 from "spark-md5";
 import globalConfig from "./config";
 
-class LfmError extends Error {
+export class LfmError extends Error {
   constructor(o) {
     super(`${o.message}`);
     this.code = o.error;
@@ -38,7 +38,7 @@ const constructUrl = (config, method, params) => {
   return url;
 };
 
-const GET = async (method, params, config) => {
+export async function GET(method, params, config) {
   config = config || globalConfig;
   const url = constructUrl(config, method, params);
   const resp = await fetch(url.href, {
@@ -49,6 +49,50 @@ const GET = async (method, params, config) => {
     throw new LfmError(body);
   }
   return body;
-};
+}
 
-export { GET, LfmError };
+export async function authGetToken(config) {
+  const b = await GET("auth.gettoken", {}, config);
+  return b.token;
+}
+
+export async function authGetSession(token, config) {
+  const b = await GET("auth.getsession", { token }, config);
+  return b.session;
+}
+
+export async function userGetInfo(user) {
+  const b = await GET("user.getinfo", { user });
+  return { name: b.user.name, "#raw": b };
+}
+
+function mapTrack(tr) {
+  let o = {
+    artist: tr.artist["#text"],
+    album: tr.album["#text"],
+    name: tr.name,
+    mbid: tr.mbid,
+  };
+  if (!(tr["@attr"] && tr["@attr"].nowplaying)) {
+    o.time = new Date(parseInt(tr.date.uts, 10) * 1000);
+  }
+  return o;
+}
+
+export async function userGetRecentTracks(user, params) {
+  const b = await GET("user.getrecenttracks", { user, ...params });
+  const { recenttracks } = b;
+  let tracks = recenttracks.track;
+  if (!Array.isArray(tracks)) {
+    tracks = [tracks];
+  }
+  let nowPlaying = null;
+  if (tracks.length >= 1 && tracks[0]["@attr"]?.nowplaying) {
+    nowPlaying = mapTrack(tracks.shift());
+  }
+  return {
+    nowPlaying,
+    tracks: tracks.map(mapTrack),
+    "#raw": b,
+  };
+}
