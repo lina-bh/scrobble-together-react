@@ -1,10 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
-import App from "./App";
-import { AuthProvider } from "./AuthContext";
-import { GET } from "./api";
+import React from "react"
+import ReactDOM from "react-dom"
+import "bootstrap/dist/css/bootstrap.min.css"
+import "./index.css"
+import App from "./App"
+import { AuthProvider } from "./AuthContext"
+import { GET } from "./api"
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,6 +13,6 @@ ReactDOM.render(
     </AuthProvider>
   </React.StrictMode>,
   document.getElementById("root")
-);
+)
 
-window.st = { GET };
+window.st = { GET }

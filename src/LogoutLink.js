@@ -1,17 +1,17 @@
-import { useAuth } from "./AuthContext";
-import { useState } from "react";
-import Nav from "react-bootstrap/Nav";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import { useAuth } from "./AuthContext"
+import { useState } from "react"
+import Nav from "react-bootstrap/Nav"
+import Modal from "react-bootstrap/Modal"
+import Button from "react-bootstrap/Button"
 
 const LogoutLink = () => {
-  const auth = useAuth();
-  const [showModal, setShowModal] = useState(false);
+  const auth = useAuth()
+  const [showModal, setShowModal] = useState(false)
 
   const logout = () => {
-    auth.logout();
-    window.location.reload();
-  };
+    auth.logout()
+    window.location.reload()
+  }
 
   return (
     <>
@@ -35,6 +35,6 @@ const LogoutLink = () => {
         </Modal.Footer>
       </Modal>
     </>
-  );
-};
-export default LogoutLink;
+  )
+}
+export default LogoutLink

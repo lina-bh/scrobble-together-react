@@ -1,15 +1,16 @@
-import "./App.css";
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import "./App.css"
+import Container from "react-bootstrap/Container"
+import Navbar from "react-bootstrap/Navbar"
+import Nav from "react-bootstrap/Nav"
 
-import { useAuth } from "./AuthContext";
-import LogoutLink from "./LogoutLink";
-import Login from "./Login";
-import Home from "./Home";
+import { useAuth } from "./AuthContext"
+import LogoutLink from "./LogoutLink"
+import Login from "./Login"
+import Home from "./Home"
+import ErrorBoundary from "./ErrorBoundary"
 
 const Header = () => {
-  const auth = useAuth();
+  const auth = useAuth()
 
   return (
     <Navbar className="navbar-bar-red">
@@ -22,19 +23,19 @@ const Header = () => {
         )}
       </Container>
     </Navbar>
-  );
-};
+  )
+}
 
 const App = () => {
-  const auth = useAuth();
+  const auth = useAuth()
   return (
     <>
       <Header />
       <Container className="mt-4 mb-4">
-        {auth.key ? <Home /> : <Login />}
+        <ErrorBoundary>{auth.key ? <Home /> : <Login />}</ErrorBoundary>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App
