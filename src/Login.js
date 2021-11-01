@@ -6,10 +6,10 @@ import Button from "react-bootstrap/Button"
 import { authGetSession, authGetToken, LfmError } from "./api"
 import { useAuth } from "./AuthContext"
 
-const loginurl =
+const LOGIN_URL =
   "http://www.last.fm/api/auth/?api_key=f28fccb10bd142b6dc8eadded052dbb5"
 
-function Login(props) {
+export default function Login(props) {
   const auth = useAuth()
   const [token, setToken] = useState(null)
 
@@ -49,11 +49,9 @@ function Login(props) {
         Scrobble Together is perfect for that. All you need to do is to log in
         with last.fm, and type in someone else's last.fm username.
       </p>
-      <Button href={loginurl + "&token=" + token} target="_blank">
+      <Button href={LOGIN_URL + "&token=" + token} target="_blank">
         <FontAwesomeIcon icon={faLastfm} /> Sign in with Last.fm
       </Button>
     </div>
   )
 }
-
-export default Login

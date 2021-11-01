@@ -4,9 +4,9 @@ import Nav from "react-bootstrap/Nav"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
 
-const LogoutLink = () => {
+export default function LogoutLink() {
   const auth = useAuth()
-  const [showModal, setShowModal] = useState(false)
+  const [show, setShow] = useState(false)
 
   const logout = () => {
     auth.logout()
@@ -16,11 +16,9 @@ const LogoutLink = () => {
   return (
     <>
       <Nav.Item>
-        <Nav.Link onClick={() => setShowModal(true)}>
-          Log out {auth.name}
-        </Nav.Link>
+        <Nav.Link onClick={() => setShow(true)}>Log out {auth.name}</Nav.Link>
       </Nav.Item>
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal show={show} onHide={() => setShow(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Log out</Modal.Title>
         </Modal.Header>
@@ -37,4 +35,3 @@ const LogoutLink = () => {
     </>
   )
 }
-export default LogoutLink

@@ -1,0 +1,8 @@
+.Avatar {
+  display: inline-block;
+  background-color: lightgrey;
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 50%;
+  vertical-align: middle;
+}

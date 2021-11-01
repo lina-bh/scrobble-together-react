@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react"
 
 const AuthContext = createContext()
 AuthContext.displayName = "AuthContext"
+export { AuthContext }
 
-const AuthProvider = (props) => {
+export function AuthProvider(props) {
   const [key, setKey] = useState(null)
   const [name, setName] = useState(null)
   const [loaded, setLoaded] = useState(false)
@@ -43,8 +44,6 @@ const AuthProvider = (props) => {
   )
 }
 
-const useAuth = () => useContext(AuthContext)
-
-const AuthConsumer = AuthContext.Consumer
-
-export { AuthContext, AuthProvider, AuthConsumer, useAuth }
+export function useAuth() {
+  return useContext(AuthContext)
+}
