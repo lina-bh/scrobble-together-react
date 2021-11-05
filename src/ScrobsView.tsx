@@ -6,7 +6,7 @@ import {
   compareDesc,
   formatDistanceToNow,
 } from "date-fns"
-import { OrderedMap as ImOrderedMap } from "immutable"
+import produce from "immer"
 import Button from "react-bootstrap/Button"
 
 // import "./ScrobsView.css"
@@ -34,7 +34,7 @@ export default function ScrobsView({ onClear, user }) {
   const timer = useRef(null)
 
   const [nowPlaying, setNowPlaying] = useState(null)
-  const [scrobs, setScrobs] = useState(ImOrderedMap<string, Scrob>())
+  const [scrobs, setScrobs] = useState(() => new Map<string, Scrob>())
 
   useEffect(() => {
     const tick = async () => {
@@ -51,15 +51,14 @@ export default function ScrobsView({ onClear, user }) {
         ? addSeconds(newScrobs[0].time, 1)
         : new Date()
       setNowPlaying(recent.nowPlaying ?? null)
-      setScrobs((prevScrobs) => {
-        let scrobs = prevScrobs.withMutations((map) => {
+      setScrobs(
+        produce((draft) => {
           for (const scrob of newScrobs) {
-            map.set(scrob.toKey(), scrob)
+            draft.set(scrob.toKey(), scrob)
           }
+          // draft = scrobs.sortBy((scr) => scr.time, compareDesc)
         })
-        scrobs = scrobs.sortBy((scr) => scr.time, compareDesc)
-        return scrobs
-      })
+      )
       timer.current = setTimeout(tick, 60 * 1000)
     }
     if (!timer.current) {
@@ -72,13 +71,17 @@ export default function ScrobsView({ onClear, user }) {
     }
   }, [user.name])
 
+  const scrobItems = [...scrobs.entries()]
+    .sort(([_, l], [__, r]) => compareDesc(l.time, r.time))
+    .map(([key, scrob]) => scrobToListItem(scrob, key))
+
   return (
     <>
       <Avatar src={user.avatarHref} alt={`${user.name}'s avatar`} />
-      {" " + user.name}
+      {user.name}
       <ul>
         {nowPlaying && scrobToListItem(nowPlaying)}
-        {scrobs.toArray().map(([key, scrob]) => scrobToListItem(scrob, key))}
+        {scrobItems}
       </ul>
       <Button onClick={onClear}>Cease</Button>
     </>
