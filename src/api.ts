@@ -1,5 +1,5 @@
 import SparkMD5 from "spark-md5"
-import { sortBy as _sortBy } from "lodash"
+import { sortBy as _sortBy } from "lodash-es"
 
 const apiKey: string = process.env.REACT_APP_LASTFM_KEY
 const secret: string = process.env.REACT_APP_LASTFM_SECRET
