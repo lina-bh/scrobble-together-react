@@ -16,7 +16,7 @@ export default function LogoutLink() {
   return (
     <>
       <Nav.Item>
-        <Nav.Link onClick={() => setShow(true)}>Log out {auth.name}</Nav.Link>
+        <Nav.Link onClick={() => setShow(true)}>Log out</Nav.Link>
       </Nav.Item>
       <Modal show={show} onHide={() => setShow(false)} centered>
         <Modal.Header closeButton>

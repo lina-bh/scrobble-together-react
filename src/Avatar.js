@@ -1,9 +1,10 @@
 import "./Avatar.css"
 
-export default function Avatar({ alt, src, ...props }) {
+export default function Avatar({ alt, src, className, ...props }) {
+  const classes = "Avatar " + className
   return src ? (
-    <img className="Avatar" alt={alt} src={src} {...props} />
+    <img className={classes} alt={alt} src={src} {...props} />
   ) : (
-    <div className="Avatar"></div>
+    <div className={classes}></div>
   )
 }

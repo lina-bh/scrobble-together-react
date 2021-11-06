@@ -1,47 +1,23 @@
-import { useState, /* useEffect, */ useRef } from "react"
-import FormControl from "react-bootstrap/FormControl"
-import InputGroup from "react-bootstrap/InputGroup"
-import Button from "react-bootstrap/Button"
+import { useState } from "react"
 import Alert from "react-bootstrap/Alert"
 
-import { userGetInfo, LfmError } from "./api"
-import ScrobsView from "./ScrobsView"
-
-function TrackBox({ onSubmit }) {
-  const input = useRef(null)
-
-  const enter = () => {
-    onSubmit(input.current.value)
-  }
-
-  return (
-    <InputGroup className="mx-auto px-5">
-      <FormControl
-        type="text"
-        placeholder="Last.fm username"
-        ref={input}
-        onKeyPress={(ev) => {
-          if (ev.key === "Enter") {
-            enter()
-          }
-        }}
-      />
-      <Button onClick={enter}>Start</Button>
-    </InputGroup>
-  )
-}
+import { LfmError } from "./api/index"
+import { userGetInfo, UserInfo } from "./api/user/getInfo"
+import TargetController from "./TargetController"
+import UsernameBox from "./UsernameBox"
 
 const SAVEDUSER_KEY = "savedUser"
 
 export default function Home() {
-  const [trackingUser, setTrackingUser] = useState(null)
-  const [invalidUser, setInvalidUser] = useState(null)
+  const [user, setUser] = useState<UserInfo | null>(null)
+  const [invalidUser, setInvalidUser] = useState<string>("")
 
-  const doSubmit = async (username: string, auto: boolean) => {
+  const doSubmit = async (username: string, auto?: boolean) => {
     try {
       const userInfo = await userGetInfo(username)
       console.log(userInfo)
-      setTrackingUser(userInfo)
+      setInvalidUser("")
+      setUser(userInfo)
       sessionStorage.setItem(SAVEDUSER_KEY, userInfo.name)
     } catch (ex) {
       if (ex instanceof LfmError && ex.code === 6) {
@@ -56,27 +32,18 @@ export default function Home() {
 
   const doClear = () => {
     sessionStorage.removeItem("savedUser")
-    setTrackingUser(null)
+    setUser(null)
   }
 
-  /*
-  useEffect(() => {
-    let savedUser
-    if ((savedUser = sessionStorage.getItem("savedUser"))) {
-      doSubmit(savedUser, true)
-    }
-  }, [])
-  */
-
-  return trackingUser ? (
-    <ScrobsView user={trackingUser} onClear={doClear} />
+  return user ? (
+    <TargetController target={user} onClear={doClear} />
   ) : (
     <>
       <p>
         Enter someone's Last.fm username and Scrobble Together will start
         tracking their scrobbles.
       </p>
-      <TrackBox onSubmit={doSubmit} />
+      <UsernameBox onSubmit={doSubmit} />
       {invalidUser && (
         <Alert variant="warning" className="mt-3 mx-5">
           User '{invalidUser}' not found.

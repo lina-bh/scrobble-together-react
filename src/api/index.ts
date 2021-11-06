@@ -1,8 +1,7 @@
 import SparkMD5 from "spark-md5"
-import { sortBy as _sortBy } from "lodash-es"
 
-const apiKey: string = process.env.REACT_APP_LASTFM_KEY
-const secret: string = process.env.REACT_APP_LASTFM_SECRET
+const apiKey: string = process.env.REACT_APP_LASTFM_KEY as string
+const secret: string = process.env.REACT_APP_LASTFM_SECRET as string
 if (!(apiKey && secret)) {
   throw new Error("Lastfm keys are missing")
 }
@@ -22,7 +21,7 @@ export class LfmError extends Error {
   }
 }
 
-function constructUrl(method: string, params: any) {
+function constructUrl(method: string, params: Record<string, any>) {
   const url = new URL("https://ws.audioscrobbler.com/2.0/")
 
   url.searchParams.set("api_key", apiKey)
@@ -31,7 +30,7 @@ function constructUrl(method: string, params: any) {
     url.searchParams.set(k, v.toString())
   }
   let allParams = Array.from(url.searchParams.entries())
-  allParams = _sortBy(allParams, [0])
+  allParams.sort((a, b) => (a[0] > b[0] ? 1 : b[0] > a[0] ? -1 : 0))
   const sig = allParams.reduce((acc, [k, v]) => acc + k + v, "") + secret
   const hash = SparkMD5.hash(sig)
   url.searchParams.set("api_sig", hash)
@@ -41,7 +40,7 @@ function constructUrl(method: string, params: any) {
   return url.href
 }
 
-export async function GET(method, params) {
+export async function GET(method: string, params: Record<string, any>) {
   const href = constructUrl(method, params)
   const re = await fetch(href, {
     headers: { Accept: "application/json" },
@@ -58,15 +57,9 @@ export async function authGetToken() {
   return obj.token
 }
 
-export async function authGetSession(token) {
+export async function authGetSession(token: string) {
   const obj = await GET("auth.getsession", { token })
   return obj.session
-}
-
-export async function userGetInfo(username) {
-  const { user } = await GET("user.getinfo", { user: username })
-  const avatarHref = user.image[0]["#text"]
-  return { name: user.name, avatarHref: avatarHref || null, "#raw": user }
 }
 
 export async function userExists(username: string) {

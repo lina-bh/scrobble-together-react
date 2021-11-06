@@ -14,7 +14,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <Container className="mt-4 mb-4">
+      <Container className="mt-4">
         <Suspense fallback={null}>{auth.key ? <Home /> : <Login />}</Suspense>
       </Container>
     </>
