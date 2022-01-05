@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faLastfm } from "@fortawesome/free-brands-svg-icons"
+import { faLastfm } from "@fortawesome/free-brands-svg-icons/faLastfm"
 import Button from "react-bootstrap/Button"
 
 import { authGetSession, authGetToken, LfmError } from "./api"
