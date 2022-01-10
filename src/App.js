@@ -1,4 +1,3 @@
-import "./App.css"
 import Container from "react-bootstrap/Container"
 import { lazy as reactLazy, Suspense } from "react"
 
