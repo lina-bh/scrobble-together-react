@@ -1,9 +1,9 @@
-import { StrictMode } from "react"
+import React, { StrictMode } from "react"
 import { render } from "react-dom"
 // import reportWebVitals from "./reportWebVitals"
 
+import "./tailwind.css"
 import "./index.css"
-import "bootstrap/dist/css/bootstrap.min.css"
 import App from "./App"
 import { AuthProvider } from "./AuthContext"
 

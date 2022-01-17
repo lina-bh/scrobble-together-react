@@ -1,7 +1,5 @@
-import { useEffect, useState, useCallback } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faLastfm } from "@fortawesome/free-brands-svg-icons/faLastfm"
-import Button from "react-bootstrap/Button"
+import React, { useEffect, useState, useCallback } from "react"
+import Button from "./Button"
 
 import { authGetSession, authGetToken, LfmError } from "./api"
 import { useAuth } from "./AuthContext"
@@ -40,7 +38,7 @@ export default function Login(props) {
   }, [token, onFocus])
 
   return (
-    <div className="mb-2">
+    <>
       <p>
         Scrobble Together listens for the scrobbles of another last.fm user and
         replicates them to your last.fm profile. Imagine you're in a music
@@ -49,9 +47,14 @@ export default function Login(props) {
         Scrobble Together is perfect for that. All you need to do is to log in
         with last.fm, and type in someone else's last.fm username.
       </p>
-      <Button href={LOGIN_URL + "&token=" + token} target="_blank">
-        <FontAwesomeIcon icon={faLastfm} /> Sign in with Last.fm
-      </Button>
-    </div>
+      <div className="pt-4 text-center">
+        <Button
+          posture="good"
+          href={LOGIN_URL + "&token=" + token}
+          target="_blank">
+          Sign in with Last.fm
+        </Button>
+      </div>
+    </>
   )
 }
